@@ -22,4 +22,7 @@ urlpatterns = [
     path('register/',include("accounts.urls")),
     path('login/', include("accounts.urls")),
     path('user/',include("accounts.urls")),
+    path('products/', include('products.urls')),
+    path('products/', include('products.urls')),
+
 ]
