@@ -3,9 +3,10 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated,IsAdminUser,AllowAny
 from rest_framework.decorators import api_view, permission_classes
-from .serializer import ProductSerializer
-from .models import Product
+from .serializer import ProductSerializer,CategorySerializer
+from .models import Product,Category
 from django.shortcuts import get_object_or_404
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 
 
@@ -54,4 +55,15 @@ def delete_product(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     product.delete()
     return Response({'message': 'Product deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
+
+
+
+##Categories
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticatedOrReadOnly])
+def get_categories(request):
+    categories = Category.objects.all()
+    serializer = CategorySerializer(categories, many=True)
+    return Response(serializer.data)
 
