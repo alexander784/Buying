@@ -68,7 +68,7 @@ def get_categories(request):
     return Response(serializer.data)
 
 @api_view(['POST'])
-@permission_classes([IsAuthenticatedOrReadOnly])
+@permission_classes([IsAdminUser])
 def create_category(request):
     serializer = CategorySerializer(data=request.data)
     if serializer.is_valid():
@@ -78,30 +78,12 @@ def create_category(request):
 
 
 
-@api_view(['GET', 'PUT', 'DELETE'])
-@permission_classes([IsAuthenticatedOrReadOnly])
-def category_detail(request, category_id):
-    try:
-        category = Category.objects.get(id=category_id)
-    except Category.DoesNotExist:
-        return Response({"error":"Category not found"}, status=status.HTTP_404_NOT_FOUND)
+@api_view(['GET'])
+def list_categories(request):
+    categories = Category.objects.all()
+    serializer = CategorySerializer(categories, many=True)
+    return Response(serializer.data)
     
-    # Fetch all categories
-    if request.method == 'GET':
-        serializer = CategorySerializer(category)
-        return Response(serializer.data)
-    
-    # Update categorias
-    elif request.method == 'PUT':
-        serializer = CategorySerializer(category, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        # Delete categories
-    elif request.method == 'DELETE':
-        category.delete()
-        return Response({"message":'Category deleted'}, status=status.HTTP_204_NO_CONTENT)
     
 
     
