@@ -60,12 +60,12 @@ def delete_product(request, product_id):
 
 ##Categories
 
-@api_view(['GET'])
-@permission_classes([IsAuthenticatedOrReadOnly])
-def get_categories(request):
-    categories = Category.objects.all()
-    serializer = CategorySerializer(categories, many=True)
-    return Response(serializer.data)
+# @api_view(['GET'])
+# @permission_classes([IsAuthenticatedOrReadOnly])
+# def get_categories(request):
+#     categories = Category.objects.all()
+#     serializer = CategorySerializer(categories, many=True)
+#     return Response(serializer.data)
 
 @api_view(['POST'])
 @permission_classes([IsAdminUser])
@@ -82,6 +82,17 @@ def create_category(request):
 def list_categories(request):
     categories = Category.objects.all()
     serializer = CategorySerializer(categories, many=True)
+    return Response(serializer.data)
+
+# Search Products by Category or name
+@api_view('GET')
+def search_products(request):
+    query = request.GET.get('q', '')
+    if query:
+        products = Product.objects.filter(name_icontains=query) | Product.objects.filter(category__name__icontains=query)
+    else:
+        products = Product.objects.all()
+    serializer = ProductSerializer(products, many=True)
     return Response(serializer.data)
     
     
