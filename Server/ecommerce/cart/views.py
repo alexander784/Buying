@@ -7,6 +7,8 @@ from rest_framework import status
 from rest_framework.response import Response
 from django.contrib.auth.signals import user_logged_in
 from django.dispatch import receiver
+from urllib.parse import quote
+
 
 
 
@@ -75,6 +77,28 @@ def remove_from_cart(request, product_id):
         request.session['cart'] = cart
 
     return Response({'message': 'item removed from cart'}, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def request_quote(request):
+    def request_quote(request):
+        if request.user.is_authenticated:
+            cart_items = CartItem.objects.filter(user=request.user)
+        else:
+            cart_items = request.session.get('cart', {}).values()
+
+        if not cart_items:
+           return Response({"message": "Cart is empty"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        message = "Hello  I would like to request a quote for the following items:\n\n",
+        for item in cart_items:
+            message += f"- {item['name']} (Qty: {item['quantity']})  - ${item['price']}\n" 
+
+        whatsapp_number = "0117070199" 
+        encoded_message = quote(message)
+        whatsapp_link = f"https://wa.me/{whatsapp_number}?text={encoded_message}"
+
+        return Response({"whatsapp_link": whatsapp_link}, status=status.HTTP_200_OK)
 
 
     
