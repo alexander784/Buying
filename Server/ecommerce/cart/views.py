@@ -49,6 +49,18 @@ def transfer_cart_to_db(sender, request, user, **kwargs):
 
     request.session['cart'] = {}
 
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_cart(request):
+    if request.user.is_authenticated:
+        cart_items = CartItem.objects.filter(user=request.user)
+        cart_data = [{"name": item.product.name, "quantity":item.quantity, "price": item.price}
+                     for item in cart_items]
+    else:
+        cart_data - list(request.session.get('cart',{}).values())
+        return Response({"cart": cart_data}, status=status.HTTP_200_OK)
+    
+
 
         
 
