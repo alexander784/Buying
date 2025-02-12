@@ -85,7 +85,7 @@ def list_categories(request):
     return Response(serializer.data)
 
 # Search Products by Category or name
-@api_view('GET')
+@api_view(['GET'])
 def search_products(request):
     query = request.GET.get('q', '')
     if query:
