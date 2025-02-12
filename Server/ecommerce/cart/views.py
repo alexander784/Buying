@@ -58,8 +58,27 @@ def get_cart(request):
                      for item in cart_items]
     else:
         cart_data - list(request.session.get('cart',{}).values())
-        return Response({"cart": cart_data}, status=status.HTTP_200_OK)
+    return Response({"cart": cart_data}, status=status.HTTP_200_OK)
+
+
+@api_view(['DELETE'])
+@permission_classes([AllowAny])
+def remove_from_cart(request, product_id):
+    if request.user.is_authenticated:
+        cart_item = get_object_or_404(CartItem, user=request.user,product_id=product_id)
+        cart_item.delete()
+
+    else:
+        cart = request.session.get('cart', {})
+        cart.pop(str(product_id), None)
+        #Save session
+        request.session['cart'] = cart
+
+    return Response({'message': 'item removed from cart'}, status=status.HTTP_200_OK)
+
+
     
+
 
 
         
