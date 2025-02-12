@@ -30,10 +30,11 @@ def add_to_cart(request, product_id):
     else:
         cart[str(product_id)] = {
             'name':product.name,
-            'price':product.price,
+            'price':float(product.price),
             'quantity': 1
         }
     request.session['cart'] = cart
+    request.session.modified = True 
     return Response({"message":"Item added to cart", "cart": cart},status=status.HTTP_200_OK)
 
 # Logged in user
