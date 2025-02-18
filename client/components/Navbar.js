@@ -14,7 +14,7 @@ const  Navbar= () => {
                 </div>
 
                 <div className="flex items-center gap-6">
-                  <Link href="/Signup" className="hover:text-orange-900">Login</Link>
+                  <Link href="/Login" className="hover:text-orange-900">Login</Link>
                   <Link href="/cart" className="relative">
                     <FaShoppingCart className="w-6 h-6" />
           </Link>

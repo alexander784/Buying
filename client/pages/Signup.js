@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useRouter } from "next/router";  
+import Link from "next/link";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -116,6 +117,9 @@ const Signup = () => {
         >
           {loading ? "Signing Up..." : "Sign Up"}
         </button>
+        <p>Already have an account?</p>
+        <Link href="/Login" className="underline text-orange-500">Login</Link>
+
       </form>
     </div>
   );
