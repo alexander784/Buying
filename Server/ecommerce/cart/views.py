@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from rest_framework.permissions import AllowAny
 from rest_framework.decorators import api_view, permission_classes
-# from .models.Products import Product,CartItem
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.response import Response
@@ -92,7 +91,7 @@ def request_quote(request):
     if not cart_items:
         return Response({"message": "Cart is empty"}, status=status.HTTP_400_BAD_REQUEST)
     
-    message = "Hello  I would like to request a quote for the following items:\n\n",
+    message = "Hello  I would like to request a quote for the following items:\n\n"
     for item in cart_items:
         message += f"- {item['name']} (Qty: {item['quantity']})  - ${item['price']}\n" 
 
