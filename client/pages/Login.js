@@ -44,8 +44,19 @@ const Login = () => {
         if (data.error) {
           setError(data.error);
         } else {
+          localStorage.setItem('access_token', data.access);
+          localStorage.setItem('refresh_token', data.refresh);
+          localStorage.setItem('user', JSON.stringify(data.user));
+
           setLoading(false);
-          router.push('/ProductPage');
+
+          if(data.user.is_admin) {
+            router.push('/Admin_dashboard');
+
+          }else {
+            router.push('/ProductPage');
+          }
+
         
         }
       })
