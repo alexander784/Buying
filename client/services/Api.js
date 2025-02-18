@@ -1,6 +1,6 @@
 import config from '@/postcss.config.mjs';
 import axios from 'axios';
-import { headers } from 'next/headers';
+// import { headers } from 'next/headers';
 
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/";
