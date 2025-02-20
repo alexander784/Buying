@@ -54,7 +54,7 @@ const Login = () => {
             router.push('/Admin_dashboard');
 
           }else {
-            router.push('/ProductPage');
+            router.push('/ProductsPage');
           }
 
         
