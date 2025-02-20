@@ -15,6 +15,33 @@ const AddProduct = () => {
     image: null,
   });
 
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const fetchCategories = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/products/categories/`);
+      setCategories(response.data);
+    } catch (error) {
+      console.error("Failed to load categories:", error);
+    }
+  };
+
+  const handleChange = (e) => {
+    setProductData({
+      ...productData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleImageChange = (e) => {
+    setProductData({ ...productData, image: e.target.files[0] });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
