@@ -59,7 +59,7 @@ const AddProduct = () => {
         throw new Error("Unauthorized: No access token found.");
       }
 
-      await axios.post(`${API_URL}/products/add/`, formData, {
+      await axios.post(`${API_URL}/products/products/create/`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${token}`,
@@ -115,7 +115,6 @@ const AddProduct = () => {
           required
         />
 
-        {/* Category Selection Dropdown */}
         <select
           name="category_id"
           value={productData.category_id}
@@ -131,7 +130,6 @@ const AddProduct = () => {
           ))}
         </select>
 
-        {/* File Upload */}
         <input
           type="file"
           name="image"

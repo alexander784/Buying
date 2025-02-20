@@ -51,7 +51,7 @@ const Login = () => {
           setLoading(false);
 
           if(data.user.is_admin) {
-            router.push('/Admin_dashboard');
+            router.push('/admin');
 
           }else {
             router.push('/ProductsPage');
