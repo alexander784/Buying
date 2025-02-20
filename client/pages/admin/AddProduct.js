@@ -1,6 +1,52 @@
+import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
+import axios from "axios";
 
+const API_URL = "http://127.0.0.1:8000";
 
 const AddProduct = () => {
+  const [categories, setCategories] = useState([]);
+  const [productData, setProductData] = useState({
+    name: "",
+    description: "",
+    price: "",
+    stock: "",
+    category_id: "",
+    image: null,
+  });
+
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    try {
+      const formData = new FormData();
+      for (const key in productData) {
+        formData.append(key, productData[key]);
+      }
+
+      const token = localStorage.getItem("access_token");
+      if (!token) {
+        throw new Error("Unauthorized: No access token found.");
+      }
+
+      await axios.post(`${API_URL}/products/add/`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      alert("Product added successfully!");
+      router.push("/admin/ProductsPage");
+    } catch (err) {
+      setError(err.response?.data?.error || "Failed to add product.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="max-w-lg mx-auto p-6 bg-white shadow-lg rounded-md">
@@ -42,6 +88,7 @@ const AddProduct = () => {
           required
         />
 
+        {/* Category Selection Dropdown */}
         <select
           name="category_id"
           value={productData.category_id}
@@ -57,6 +104,7 @@ const AddProduct = () => {
           ))}
         </select>
 
+        {/* File Upload */}
         <input
           type="file"
           name="image"
