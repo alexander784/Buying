@@ -1,7 +1,10 @@
+import { useCart } from "@/context/cartContext";
 import { getProducts } from "@/services/Products";
 import Image from "next/image";
 
-export default function ProductsPage({ products = [] }) {
+export default function ProductsPage({ products }) {
+
+  const { handleAddToCart } = useCart();
   return (
     <div className="container mx-auto p-6">
       <h2 className="text-2xl font-bold mb-4 text-center">All Products</h2>
@@ -22,7 +25,10 @@ export default function ProductsPage({ products = [] }) {
             <p className="text-gray-600 text-sm">{product.description}</p>
             <p className="text-xl font-bold mt-2">{product.price}</p>
 
-            <button className="mt-4 w-full bg-orange-950 text-white py-2 rounded-lg hover:bg-orange-900 transition">
+            <button
+              onClick={() => handleAddToCart(product.id)}
+              className="mt-4 w-full bg-orange-950 text-white py-2 rounded-lg hover:bg-orange-900 transition"
+              >
               Add to cart
             </button>
           </div>
