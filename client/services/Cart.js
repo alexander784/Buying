@@ -1,27 +1,55 @@
-const API_BASE_URL = "http://127.0.0.1:8000/"
+const API_BASE_URL = "http://127.0.0.1:8000/";
 
+export const addToCart = async (productId) => {
+    try {
+        const res = await fetch(`${API_BASE_URL}/cart/cart/add/${productId}/`, {
+            method: "POST",
+            credentials: "include",
+        });
 
-export const addToCart = async(productId) => {
-    const res = await fetch(`${API_BASE_URL}/cart/add/${productId}/`, {
-        method:'POST',
-        credentials: 'include',
-    });
-    return res.json();
+        if (!res.ok) {
+            throw new Error(`Failed to add to cart: ${res.status} ${res.statusText}`);
+        }
+
+        return await res.json();
+    } catch (error) {
+        console.error("Error adding to cart:", error);
+        return { error: error.message };
+    }
 };
 
 export const getCart = async () => {
-    const res = await fetch(`${API_BASE_URL}/cart/`, {
-        method: 'GET',
-        credentials:'include',
+    try {
+        const res = await fetch(`${API_BASE_URL}/cart/cart/`, {
+            method: "GET",
+            credentials: "include",
+        });
 
-    });
-    return res.json();
+        if (!res.ok) {
+            throw new Error(`Failed to fetch cart: ${res.status} ${res.statusText}`);
+        }
+
+        return await res.json();
+    } catch (error) {
+        console.error("Error fetching cart:", error);
+        return { error: error.message, cart: [] }; 
+    }
 };
 
 export const requestQuote = async () => {
-    const res = await fetch(`${API_BASE_URL}/cart/request-quote/`, {
-        method: 'GET',
-        credentials:' include',
-    });
-    return res.json();
+    try {
+        const res = await fetch(`${API_BASE_URL}/cart/cart/request_quote/`, {
+            method: "GET",
+            credentials: "include",
+        });
+
+        if (!res.ok) {
+            throw new Error(`Failed to request quote: ${res.status} ${res.statusText}`);
+        }
+
+        return await res.json();
+    } catch (error) {
+        console.error("Error requesting quote:", error);
+        return { error: error.message };
+    }
 };
