@@ -1,4 +1,4 @@
-import Router from "next/router";
+import { useRouter } from "next/router";
 const { createContext, useState, useEffect } = require("react");
 
 
@@ -45,5 +45,12 @@ export const AuthProvider = () => {
     };
 
 
-    
-}
+    return (
+        <AuthContext.Provider value={{ user, role, handleLogin, handleLogout }}>
+            {children}
+        </AuthContext.Provider>
+    );
+};
+
+
+export const useAuth = () => useContext(AuthContext);
