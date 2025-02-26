@@ -1,9 +1,17 @@
 import { useCart } from "@/context/cartContext";
 import { getProducts } from "@/services/Products";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
 export default function ProductsPage({ products = [] }) {
   const {handleAddToCart} = useCart();
+  // const [products, setProducts] = useState([]);
+
+  // useEffect(() => {
+  //   getProducts()
+  //   .then((data) => setProducts(data))
+  //   .catch((error) => console.error('Error fetching products', error));
+  // }, []);
   return (
     <div className="container mx-auto p-6">
       <h2 className="text-2xl font-bold mb-4 text-center">All Products</h2>
@@ -43,17 +51,18 @@ export default function ProductsPage({ products = [] }) {
 }
 
 
-export async function getServerSideProps() {
-  try {
-    const products = await getProducts();
+// export async function getStaticProps() {
+//   try {
+//     const products = await getProducts();
 
-    return {
-      props: { products: products || [] },
-    };
-  } catch (error) {
-    console.error("Error fetching products:", error);
-    return {
-      props: { products: [] }, 
-    };
-  }
-}
+//     return {
+//       props: { products: products || [] },
+//       revalidate: 60,
+//     };
+//   } catch (error) {
+//     console.error("Error fetching products:", error);
+//     return {
+//       props: { products: [] }, 
+//     };
+//   }
+// }

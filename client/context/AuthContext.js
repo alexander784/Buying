@@ -1,56 +1,41 @@
+import { createContext, useContext, useEffect, useState } from "react";
 import { useRouter } from "next/router";
-const { createContext, useState, useEffect } = require("react");
-
+import Cookies from "js-cookie";
 
 const AuthContext = createContext();
 
-export const AuthProvider = () => {
+export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
-    const [role, setRole] = useState(null);
-
     const router = useRouter();
 
-
-
-    useEffect (() => {
-        const fetchUser = async () => {
-            const token = getToken();
-            if (token) {
-                const fetchedUser = await getUser();
-                if (fetchedUser) {
-                    setUser(fetchedUser);
-                    setRole(fetchedUser.is_admin ? 'admin' : 'user');
-                }
-            }
-        };
-        fetchUser();
+    useEffect(() => {
+        const storedUser = Cookies.get("user");
+        if (storedUser) {
+            setUser(JSON.parse(storedUser));
+        }
     }, []);
 
-    const handleLogin = async (email, password) => {
-        const data = await loginUser(email, password);
-        if(data.access) {
-            saveToken(data.access, data.refresh);
-            setUser(data.user);
-            setRole(data.user.is_admin ? 'admin': 'user');
-            Router.push('/');
-        }else {
-            console.error('Login failed');
-        }
-    };
-    const handleLogout = () => {
-        removeToken();
-        setUser(null);
-        setRole(null);
+    const login = (userData, accessToken, refreshToken) => {
+        Cookies.set("user", JSON.stringify(userData));
+        Cookies.set("access_token", accessToken);
+        Cookies.set("refresh_token", refreshToken);
+        setUser(userData);  
         router.push("/");
     };
 
+    const handleLogout = () => {
+        Cookies.remove("user");
+        Cookies.remove("access_token");
+        Cookies.remove("refresh_token");
+        setUser(null);
+        router.push("/");
+    };
 
     return (
-        <AuthContext.Provider value={{ user, role, handleLogin, handleLogout }}>
+        <AuthContext.Provider value={{ user, login, handleLogout }}>
             {children}
         </AuthContext.Provider>
     );
 };
-
 
 export const useAuth = () => useContext(AuthContext);

@@ -13,3 +13,27 @@ Api.interceptors.request.use((config) => {
     }
     return config;
 });
+
+
+
+export const loginUser = async (email, password) => {
+    const res = await fetch(`${API_BASE_URL}/api/token/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+    });
+
+    return res.json();
+};
+
+export const getUser = async () => {
+    const token = getToken();
+    if (!token) return null;
+
+    const res = await fetch(`${API_BASE_URL}/api/user/`, {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (!res.ok) return null;
+    return res.json();
+};
