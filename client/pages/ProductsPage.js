@@ -1,28 +1,20 @@
+import { useProducts } from "@/context/ProductsContext";
 import { useCart } from "@/context/cartContext";
-import { getProducts } from "@/services/Products";
 import Image from "next/image";
-import { useEffect, useState } from "react";
 
-export default function ProductsPage({ products = [] }) {
-  const {handleAddToCart} = useCart();
-  // const [products, setProducts] = useState([]);
+export default function ProductsPage() {
+  const { products } = useProducts();
+  const { handleAddToCart } = useCart();
 
-  // useEffect(() => {
-  //   getProducts()
-  //   .then((data) => setProducts(data))
-  //   .catch((error) => console.error('Error fetching products', error));
-  // }, []);
   return (
     <div className="container mx-auto p-6">
       <h2 className="text-2xl font-bold mb-4 text-center">All Products</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {products.length > 0 ? (
           products.map((product) => (
-            <div key={product.id}
-             className="bg-white shadow-lg rounded-lg p-4">
+            <div key={product.id} className="bg-white shadow-lg rounded-lg p-4">
               <div className="w-full h-48 relative">
-                <Image 
-                  // src={product.image ? `http://127.0.0.1:8000${product.image}` : "/default-image.jpg"} 
+                <Image
                   alt={product.name || "Product"}
                   layout="fill"
                   objectFit="cover"
@@ -49,20 +41,3 @@ export default function ProductsPage({ products = [] }) {
     </div>
   );
 }
-
-
-// export async function getStaticProps() {
-//   try {
-//     const products = await getProducts();
-
-//     return {
-//       props: { products: products || [] },
-//       revalidate: 60,
-//     };
-//   } catch (error) {
-//     console.error("Error fetching products:", error);
-//     return {
-//       props: { products: [] }, 
-//     };
-//   }
-// }

@@ -6,13 +6,15 @@ export const Api = axios.create({
 
 Api.interceptors.request.use((config) => {
     if (typeof window !== "undefined") { 
-        const token = localStorage.getItem("token");
-        if (token) {
+        const token = localStorage.getItem("access_token");
+        if (token && !config.url.includes('/products/products/')) {
             config.headers.Authorization = `Bearer ${token}`;
         }
     }
     return config;
-});
+},
+(error) => Promise.reject(error)
+);
 
 
 
