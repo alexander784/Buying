@@ -1,5 +1,5 @@
 import { addToCart, getCart, requestQuote, removeFromCart } from "@/services/Cart";
-const { createContext, useState, useEffect, useContext } = require("react");
+import { createContext, useState, useEffect, useContext } from "react";
 
 const CartContext = createContext();
 
@@ -14,6 +14,7 @@ export const CartProvider = ({ children }) => {
             if (!data || !data.cart) {
                 console.warn("Cart is missing or invalid:", data);
                 setCart([]); 
+                return;
             }
     
             setCart(data.cart);
@@ -24,7 +25,7 @@ export const CartProvider = ({ children }) => {
     };
 
     useEffect(() => {
-        fetchCart();
+        fetchCart(); 
     }, []);
 
     const handleAddToCart = async (productId) => {
@@ -38,22 +39,29 @@ export const CartProvider = ({ children }) => {
     
             console.log("Item successfully added to cart:", response);
             
-            await fetchCart();
-    
-            console.log("Updated Cart Items:", cart);
+            await fetchCart(); 
         } catch (error) {
             console.error("Error in handleAddToCart:", error);
         }
     };
-    
+
     const handleRemoveFromCart = async (productId) => {
+        console.log("Removing item from cart. Product ID:", productId); // Debug log
+    
+        if (!productId) {
+            console.error("Error: productId is undefined!");
+            return;
+        }
+    
         try {
-            await removeFromCart(productId);
-            await fetchCart(); 
+            const response = await removeFromCart(productId);
+            console.log("Item removed:", response);
+            fetchCart(); // Refresh the cart
         } catch (error) {
             console.error("Error removing from cart:", error);
         }
     };
+    
 
     const handleRequestQuote = async () => {
         try {

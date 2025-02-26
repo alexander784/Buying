@@ -9,24 +9,24 @@ export const AuthProvider = ({ children }) => {
     const router = useRouter();
 
     useEffect(() => {
-        const storedUser = Cookies.get("user");
+        const storedUser = localStorage.getItem("user");
         if (storedUser) {
             setUser(JSON.parse(storedUser));
         }
     }, []);
 
     const login = (userData, accessToken, refreshToken) => {
-        Cookies.set("user", JSON.stringify(userData));
-        Cookies.set("access_token", accessToken);
-        Cookies.set("refresh_token", refreshToken);
+        localStorage.setItem("user", JSON.stringify(userData));
+        localStorage.setItem("access_token", accessToken);
+        localStorage.setItem("refresh_token", refreshToken);
         setUser(userData);  
         router.push("/");
     };
 
     const handleLogout = () => {
-        Cookies.remove("user");
-        Cookies.remove("access_token");
-        Cookies.remove("refresh_token");
+       localStorage.removeItem("user");
+       localStorage.removeItem("access_token");
+       localStorage.removeItem("refresh_token");
         setUser(null);
         router.push("/");
     };

@@ -1,9 +1,11 @@
 import Link from "next/link";
 import { FaShoppingCart } from "react-icons/fa";
 import { useAuth } from "@/context/AuthContext";
+import { useCart } from "@/context/cartContext"; 
 
 const Navbar = () => {
   const { user, handleLogout } = useAuth();
+  const { cart } = useCart(); 
 
   return (
     <nav className="bg-slate-500 px-6 py-4">
@@ -31,8 +33,14 @@ const Navbar = () => {
           ) : (
             <Link href="/Login" className="hover:text-orange-900">Login</Link>
           )}
+
           <Link href="/cart" className="relative">
             <FaShoppingCart className="w-6 h-6" />
+            {cart.length > 0 && (  
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                {cart.length}
+              </span>
+            )}
           </Link>
         </div>
       </div>

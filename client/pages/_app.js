@@ -6,14 +6,15 @@ import "@/styles/globals.css";
 
 export default function App({ Component, pageProps }) {
   return (
+    <CartProvider>
     <AuthProvider>
       <ProductsProvider>
-    <CartProvider>
      <Layout>
        <Component {...pageProps} />
      </Layout>
-    </CartProvider>
     </ProductsProvider>
     </AuthProvider>
+    </CartProvider>
+
   )
 }

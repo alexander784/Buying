@@ -2,7 +2,7 @@ import { useCart } from "@/context/cartContext";
 
 export default function CartPage() {
     const { cart, handleRemoveFromCart, handleRequestQuote } = useCart();
-
+    
     return (
         <div className="container mx-auto p-6">
             <h2 className="text-2xl font-semibold mb-4">Your Cart</h2>
@@ -13,7 +13,8 @@ export default function CartPage() {
                 <div className="bg-white shadow-lg rounded-lg p-6">
                     <ul>
                         {cart.map((item) => (
-                            <li key={item.id} className="flex justify-between border-b p-4">
+                            <li key={item.id}
+                             className="flex justify-between border-b p-4">
                                 <div>
                                     <h3 className="font-semibold">{item.name}</h3>
                                     <p>Qty: {item.quantity}</p>
@@ -24,7 +25,9 @@ export default function CartPage() {
                                     className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition"
                                 >
                                     Remove
+                                    
                                 </button>
+                                
                             </li>
                         ))}
                     </ul>
