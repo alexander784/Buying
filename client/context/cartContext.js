@@ -46,7 +46,7 @@ export const CartProvider = ({ children }) => {
     };
 
     const handleRemoveFromCart = async (productId) => {
-        console.log("Removing item from cart. Product ID:", productId); // Debug log
+        console.log("Removing item from cart. Product ID:", productId); 
     
         if (!productId) {
             console.error("Error: productId is undefined!");
@@ -56,7 +56,7 @@ export const CartProvider = ({ children }) => {
         try {
             const response = await removeFromCart(productId);
             console.log("Item removed:", response);
-            fetchCart(); // Refresh the cart
+            fetchCart();
         } catch (error) {
             console.error("Error removing from cart:", error);
         }
@@ -65,16 +65,23 @@ export const CartProvider = ({ children }) => {
 
     const handleRequestQuote = async () => {
         try {
-            const data = await requestQuote();
+            const response = await fetch("http://127.0.0.1:8000/cart/cart/request_quote/");
+            const text = await response.text();
+
+            const data = JSON.parse(text);
+    
             if (data?.whatsapp_link) {
                 window.open(data.whatsapp_link, "_blank");
             } else {
                 console.warn("No WhatsApp link received:", data);
+                alert("Unable to generate a WhatsApp link. Please try again.");
             }
         } catch (error) {
             console.error("Error requesting quote:", error);
+            alert("An error occurred while requesting a quote. Please check your connection and try again.");
         }
     };
+    
 
     return (
         <CartContext.Provider value={{ cart, handleAddToCart, handleRemoveFromCart, handleRequestQuote }}>
