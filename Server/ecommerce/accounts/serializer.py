@@ -8,9 +8,14 @@ User = get_user_model()
 
 
 class UserSerializer(serializers.ModelSerializer):
+    is_admin = serializers.SerializerMethodField()
+
     class Meta:
         model = User
-        fields = ['id', 'email', 'name']
+        fields = ['id', 'email', 'name', 'is_admin']
+
+    def get_is_admin(self, obj):
+        return obj.is_staff
 
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:

@@ -9,7 +9,8 @@ from django.dispatch import receiver
 from urllib.parse import quote
 from products.models import Product
 from .models import CartItem
-
+from urllib.parse import quote
+from django.http import JsonResponse
 
 
 
@@ -22,19 +23,37 @@ from .models import CartItem
 @permission_classes([AllowAny])
 def add_to_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id)
-    cart = request.session.get('cart', {})
 
+    if request.user.is_authenticated:
+        cart_item, created = CartItem.objects.get_or_create(
+            user=request.user, product=product,
+            defaults={"quantity": 1}
+        )
+        if not created:
+            cart_item.quantity += 1
+            cart_item.save()
+
+        cart_items = CartItem.objects.filter(user=request.user)
+        cart_data = [{"name": item.product.name, "quantity": item.quantity, "price": item.product.price}
+                     for item in cart_items]
+
+        return Response({"message": "Item added to cart", "cart": cart_data}, status=status.HTTP_200_OK)
+
+    cart = request.session.get('cart', {})
     if str(product_id) in cart:
         cart[str(product_id)]['quantity'] += 1
     else:
         cart[str(product_id)] = {
-            'name':product.name,
-            'price':float(product.price),
+            'name': product.name,
+            'price': float(product.price),
             'quantity': 1
         }
+
     request.session['cart'] = cart
-    request.session.modified = True 
-    return Response({"message":"Item added to cart", "cart": cart},status=status.HTTP_200_OK)
+    request.session.modified = True
+
+    return Response({"message": "Item added to cart", "cart": list(cart.values())}, status=status.HTTP_200_OK)
+
 
 # Logged in user
 @receiver(user_logged_in)
@@ -58,10 +77,13 @@ def transfer_cart_to_db(sender, request, user, **kwargs):
 def get_cart(request):
     if request.user.is_authenticated:
         cart_items = CartItem.objects.filter(user=request.user)
-        cart_data = [{"name": item.product.name, "quantity":item.quantity, "price": item.price}
+        cart_data = [{"id": item.product.id, "name": item.product.name, "quantity":item.quantity,
+                       "price": item.product.price}
                      for item in cart_items]
     else:
-        cart_data = list(request.session.get('cart',{}).values())
+        session_cart = request.session.get('cart', {})
+        cart_data = [{"id": int(product_id), "name": item["name"], "quantity": item["quantity"], "price": item["price"]}
+                     for product_id, item in session_cart.items()]
     return Response({"cart": cart_data}, status=status.HTTP_200_OK)
 
 
@@ -86,20 +108,37 @@ def request_quote(request):
     if request.user.is_authenticated:
         cart_items = CartItem.objects.filter(user=request.user)
     else:
-        cart_items = request.session.get('cart', {}).values()
+        session_cart = request.session.get('cart', {})
+        cart_items = [
+            {
+                "id": int(product_id),
+                "name": item["name"],
+                "quantity": item["quantity"],
+                "price": item["price"]
+            }
+            for product_id, item in session_cart.items()
+        ]
 
-    if not cart_items:
-        return Response({"message": "Cart is empty"}, status=status.HTTP_400_BAD_REQUEST)
+    message = "Quote Request:\n\n"
     
-    message = "Hello  I would like to request a quote for the following items:\n\n"
-    for item in cart_items:
-        message += f"- {item['name']} (Qty: {item['quantity']})  - ${item['price']}\n" 
+    if request.user.is_authenticated:
+        for item in cart_items:
+            message += f"- {item.product.name} (Qty: {item.quantity})  - ${item.product.price}\n"
 
-    whatsapp_number = "0117070199" 
+    else:
+        for item in cart_items:
+            message += f"- {item['name']} (Qty: {item['quantity']})  - ${item['price']}\n"
+
+    message += '\nCan you provide the procing details? Thank you!'
+
     encoded_message = quote(message)
-    whatsapp_link = f"https://wa.me/{whatsapp_number}?text={encoded_message}"
 
-    return Response({"whatsapp_link": whatsapp_link}, status=status.HTTP_200_OK)
+    whatsapp_number = '0796097131'
+
+    whatsapp_link = f'https://wa.me/{whatsapp_number}?text={encoded_message}'
+
+    return JsonResponse({"whatsapp_link": whatsapp_link}, status=status.HTTP_200_OK)
+
 
 
     
