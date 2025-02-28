@@ -43,5 +43,20 @@ export const CategoryProvider = () => {
             console.error(err);
         }
     };
+    const deleteCategory = async (id, token) => {
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/categories/delete/${id}/`, {
+                method: "DELETE",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            if (!response.ok) throw new Error("Failed to delete category");
+            setCategories(categories.filter((cat) => cat.id !== id));
+        } catch (err) {
+            console.error(err);
+        }
+    };
     
 }
