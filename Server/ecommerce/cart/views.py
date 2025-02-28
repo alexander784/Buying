@@ -34,16 +34,18 @@ def add_to_cart(request, product_id):
             cart_item.save()
 
         cart_items = CartItem.objects.filter(user=request.user)
-        cart_data = [{"name": item.product.name, "quantity": item.quantity, "price": item.product.price}
+        cart_data = [{"id":item.product.id,"name": item.product.name, "quantity": item.quantity, "price": item.product.price}
                      for item in cart_items]
 
         return Response({"message": "Item added to cart", "cart": cart_data}, status=status.HTTP_200_OK)
-
+     
+     #Guest users => session based cart
     cart = request.session.get('cart', {})
     if str(product_id) in cart:
         cart[str(product_id)]['quantity'] += 1
     else:
         cart[str(product_id)] = {
+            'id':product.id,
             'name': product.name,
             'price': float(product.price),
             'quantity': 1

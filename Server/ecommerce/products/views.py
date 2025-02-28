@@ -79,17 +79,38 @@ def create_category(request):
 
 
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def list_categories(request):
     categories = Category.objects.all()
     serializer = CategorySerializer(categories, many=True)
     return Response(serializer.data)
+
+
+@api_view(['PUT'])
+@permission_classes([IsAdminUser])
+def update_category(request, category_id):
+    category = get_object_or_404(Category, id=category_id)
+    serializer = CategorySerializer(category, data=request.data, partial=True)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAdminUser])
+def delete_category(request, category_id):
+    category = get_object_or_404(Category, id=category_id)
+    category.delete()
+    return Response({'message': 'Category deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
 
 # Search Products by Category or name
 @api_view(['GET'])
 def search_products(request):
     query = request.GET.get('q', '')
     if query:
-        products = Product.objects.filter(name_icontains=query) | Product.objects.filter(category__name__icontains=query)
+        products = Product.objects.filter(name__icontains=query) | Product.objects.filter(category__name__icontains=query)
+        products = products.distinct()
     else:
         products = Product.objects.all()
     serializer = ProductSerializer(products, many=True)
