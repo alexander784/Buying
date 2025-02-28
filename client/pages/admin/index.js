@@ -12,6 +12,9 @@ const AdminDashboard = () => {
             <Link href="/admin/ProductsPage" className="block bg-orange-950 text-white p-3 rounded text-center">
             View all Products
             </Link>
+            <Link href="/admin/Category" className="block bg-orange-950 text-white p-3 rounded text-center">
+            Add Category
+            </Link>
         </div>
         </div>
     );

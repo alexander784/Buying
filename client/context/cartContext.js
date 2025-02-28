@@ -5,6 +5,7 @@ const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
     const [cart, setCart] = useState([]);
+    // const [error, setError] = useState(null);
 
     const fetchCart = async () => {
         console.log("Fetching updated cart...");

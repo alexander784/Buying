@@ -40,6 +40,10 @@ export const getCart = async () => {
             },
             credentials: "include",
         });
+        if( res.status == 401) {
+            console.warn('User not logged in');
+            return {error: 'Unauthorized', cart: []};
+        }
 
         if (!res.ok) {
             throw new Error(`Failed to fetch cart: ${res.status} ${res.statusText}`);
