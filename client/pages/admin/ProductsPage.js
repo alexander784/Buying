@@ -24,7 +24,7 @@ const ProductsPage = () => {
             setProducts(res.data);
             
             }catch(error) {
-                console.error('Error fetchong products:', error)
+                console.error('Error fetching products:', error)
         }
     }
 

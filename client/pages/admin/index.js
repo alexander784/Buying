@@ -15,6 +15,9 @@ const AdminDashboard = () => {
             <Link href="/admin/ManageCategories" className="block bg-orange-950 text-white p-3 rounded text-center">
             Add Category
             </Link>
+            <Link href="/admin/categories" className="block bg-orange-950 text-white p-3 rounded text-center">
+            Products by category
+            </Link>
         </div>
         </div>
     );
