@@ -117,6 +117,23 @@ def search_products(request):
     return Response(serializer.data)
     
     
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_products_by_category(request):
+    categories = Category.objects.prefetch_related('products').all()
+    data = []
+
+    for category in categories:
+        products = category.products.all()
+        product_serializer = ProductSerializer(products, many=True)
+        category_serializer = CategorySerializer(category)
+
+        data.append({
+            "category": category_serializer.data,
+            "products": product_serializer.data
+        })
+
+    return Response(data, status=status.HTTP_200_OK)
 
     
 
