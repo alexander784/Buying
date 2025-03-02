@@ -1,44 +1,37 @@
 import { useState } from "react";
-import { useCategories } from "../../context/CategoryContext";
+import { useCategories } from "@/context/CategoryContext";
 
 const ManageCategories = () => {
-    const { categories, addCategory } = useCategories();
+    const { categories, addCategory, deleteCategory } = useCategories();
     const [newCategory, setNewCategory] = useState("");
-    const [token, setToken] = useState(localStorage.getItem("token") || "");
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
-        if (!token) {
-            alert("Admin authentication required!");
-            return;
+        if (newCategory.trim()) {
+            addCategory(newCategory);
+            setNewCategory("");
         }
-        await addCategory(newCategory, token);
-        setNewCategory("");
     };
 
     return (
-        <div className="max-w-lg mx-auto">
-            <h2 className="text-2xl font-bold">Manage Categories</h2>
+        <div>
+            <h2>Manage Categories</h2>
 
-            <form onSubmit={handleSubmit} className="mt-4">
+            <form onSubmit={handleSubmit}>
                 <input
                     type="text"
-                    placeholder="Category Name"
                     value={newCategory}
                     onChange={(e) => setNewCategory(e.target.value)}
-                    className="border p-2 w-full"
-                    required
+                    placeholder="Enter category name"
                 />
-                <button type="submit" className="mt-2 bg-blue-600 text-white px-4 py-2 rounded">
-                    Add Category
-                </button>
+                <button type="submit">Add Category</button>
             </form>
 
-            <h3 className="text-xl mt-6">Existing Categories</h3>
-            <ul className="mt-2">
+            <ul>
                 {categories.map((category) => (
-                    <li key={category.id} className="border p-2 flex justify-between">
-                        {category.name}
+                    <li key={category.id}>
+                        {category.name} 
+                        <button onClick={() => deleteCategory(category.id)}>Delete</button>
                     </li>
                 ))}
             </ul>

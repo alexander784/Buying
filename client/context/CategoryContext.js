@@ -1,87 +1,119 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useState, useEffect, useContext } from "react";
 
+const API_BASE_URL = "http://127.0.0.1:8000/";
 const CategoryContext = createContext();
 
-export const CategoryProvider = () => {
-    const[categories, setCategories] = useState([]);
-    const[loadConfig, setLoading] = useState(true)
-    const [error, setError] = useState(null)
+const getAuthHeaders = () => {
+    if (typeof window !== "undefined") {
+        const token = localStorage.getItem("access_token"); 
+        return token ? { Authorization: `Bearer ${token}` } : {};
+    }
+    return {};
+};
 
+export const CategoryProvider = ({ children }) => {
+    const [categories, setCategories] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [token, setToken] = useState(null);
 
     useEffect(() => {
-        fetchCategories();
+        if (typeof window !== "undefined") {
+            const storedToken = localStorage.getItem("access_token");
+            if (storedToken) {
+                setToken(storedToken);
+            }
+        }
     }, []);
 
-
-    const fetchCategories = async() => {
-        try {
-            const res = await fetch('http://127.0.0.1:8000/categories/categories');
-            if (!res.ok) throw new Error('Failed to fetch');
-            const data = await res.json();
-            setCategories(data);
-        } catch (err) {
-            setError(err.message);
-        }finally{
-            setLoading(false);
+    useEffect(() => {
+        if (token) {
+            fetchCategories();
         }
-    };
-    const addCategory = async (name, token) => {
+    }, [token]);
+
+    const fetchCategories = async () => {
+        setLoading(true);
         try {
-            const response = await fetch("http://127.0.0.1:8000/categories/create/", {
+            const response = await fetch(`${API_BASE_URL}categories/categories/`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    ...getAuthHeaders(),
+                },
+                credentials: "include",
+            });
+
+            if (!response.ok) {
+                throw new Error(`Failed to fetch categories: ${response.status}`);
+            }
+
+            const data = await response.json();
+            setCategories(data);
+        } catch (error) {
+            console.error("Error fetching categories:", error);
+        }
+        setLoading(false);
+    };
+
+    const addCategory = async (name) => {
+        if (!token) {
+            alert("Authentication required! Please log in as an admin.");
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_BASE_URL}categories/categories/create/`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
+                    ...getAuthHeaders(),
                 },
+                credentials: "include",
                 body: JSON.stringify({ name }),
             });
 
-            if (!response.ok) throw new Error("Failed to create category");
-            const newCategory = await response.json();
-            setCategories([...categories, newCategory]);
-        } catch (err) {
-            console.error(err);
+            const resData = await response.json();
+
+            if (!response.ok) {
+                throw new Error(`Failed to add category: ${response.status}`);
+            }
+
+            fetchCategories(); 
+        } catch (error) {
+            console.error("Error adding category:", error);
         }
     };
 
-    const updateCategory = async (id, name, token) => {
-        try {
-            const response = await fetch(`http://127.0.0.1:8000/categories/update/${id}/`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({ name }),
-            });
-
-            if (!response.ok) throw new Error("Failed to update category");
-            const updatedCategory = await response.json();
-            setCategories(categories.map((cat) => (cat.id === id ? updatedCategory : cat)));
-        } catch (err) {
-            console.error(err);
+    const deleteCategory = async (categoryId) => {
+        if (!token) {
+            alert("Authentication required! Please log in as an admin.");
+            return;
         }
-    };
-    const deleteCategory = async (id, token) => {
+
         try {
-            const response = await fetch(`http://127.0.0.1:8000/categories/delete/${id}/`, {
+            const response = await fetch(`${API_BASE_URL}categories/${categoryId}/delete/`, {
                 method: "DELETE",
                 headers: {
-                    Authorization: `Bearer ${token}`,
+                    ...getAuthHeaders(),
                 },
+                credentials: "include",
             });
 
-            if (!response.ok) throw new Error("Failed to delete category");
-            setCategories(categories.filter((cat) => cat.id !== id));
-        } catch (err) {
-            console.error(err);
+            if (!response.ok) {
+                throw new Error(`Failed to delete category: ${response.status}`);
+            }
+
+            fetchCategories(); 
+        } catch (error) {
+            console.error("Error deleting category:", error);
         }
     };
 
     return (
-        <CategoryContext.Provider value={{ categories, loading, error, addCategory, updateCategory, deleteCategory }}>
+        <CategoryContext.Provider value={{ categories, loading, addCategory, deleteCategory }}>
             {children}
         </CategoryContext.Provider>
     );
 };
-    
+
+export const useCategories = () => useContext(CategoryContext);
