@@ -30,13 +30,13 @@ const Login = () => {
           setError(data.error);
         } else {
           login(data.user, data.access, data.refresh); 
-          router.push(data.user.is_admin ? '/admin' : '/ProductsPage');
+          router.push(data.user.is_admin ? '/admin' : '/');
         }
       })
       .catch(err => setError(err))
       .finally(() => setLoading(false));
   };
-
+ 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <form onSubmit={handleSubmit} className="bg-white p-8 rounded-lg shadow-lg w-96">

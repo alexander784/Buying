@@ -7,6 +7,9 @@ const Navbar = () => {
   const { user, handleLogout } = useAuth();
   const { cart } = useCart(); 
 
+  // const homeRoute = user?.isAdmin ? '/admin' : '/';
+  const homeRoute = user?.isAdmin ? "/admin/ProductsPage" : "/"; 
+
   return (
     <nav className="bg-slate-500 px-6 py-4">
       <div className="container mx-auto flex items-center justify-between">
@@ -15,7 +18,7 @@ const Navbar = () => {
         </div>
 
         <div className="hidden md:flex gap-6 text-lg">
-          <Link href="/" className="hover:text-orange-500">Home</Link>
+          <Link href={homeRoute} className="hover:text-orange-500">Home</Link>
           <Link href="/contact" className="hover:text-orange-900">Contact Us</Link>
         </div>
 

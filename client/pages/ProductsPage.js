@@ -12,9 +12,11 @@ export default function ProductsPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {products.length > 0 ? (
           products.map((product) => (
+            console.log('Image URL:', product.image),
             <div key={product.id} className="bg-white shadow-lg rounded-lg p-4">
               <div className="w-full h-48 relative">
                 <Image
+                  // src={product.image}
                   alt={product.name || "Product"}
                   layout="fill"
                   objectFit="cover"

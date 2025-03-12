@@ -19,8 +19,15 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem("user", JSON.stringify(userData));
         localStorage.setItem("access_token", accessToken);
         localStorage.setItem("refresh_token", refreshToken);
-        setUser(userData);  
-        router.push("/");
+        setUser(userData);
+
+        if (userData.isAdmin) {
+            router.push("/admin/dashboard");
+        } else {
+            router.push("/");
+        }
+
+        // router.push("/");
     };
 
     const handleLogout = () => {
