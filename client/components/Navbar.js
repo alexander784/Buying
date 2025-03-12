@@ -7,14 +7,17 @@ const Navbar = () => {
   const { user, handleLogout } = useAuth();
   const { cart } = useCart(); 
 
-  // const homeRoute = user?.isAdmin ? '/admin' : '/';
-  const homeRoute = user?.isAdmin ? "/admin/ProductsPage" : "/"; 
+  const homeRoute = user 
+    ? user.isAdmin 
+      ? "/admin"  
+      : "/ProductsPage"   
+    : "/";
 
   return (
     <nav className="bg-slate-500 px-6 py-4">
       <div className="container mx-auto flex items-center justify-between">
         <div className="text-xl font-bold">
-          <Link href="/">My Shop</Link>
+          <Link href={homeRoute}>My Shop</Link>
         </div>
 
         <div className="hidden md:flex gap-6 text-lg">
