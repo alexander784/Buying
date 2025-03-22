@@ -40,6 +40,21 @@ def login_user(request):
         'user':UserSerializer(user).data
     }, status=status.HTTP_200_OK)
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def logout_user(request):
+    try:
+        refresh_token = request.data.get('refresh')
+        if not refresh_token:
+            return Response({'error':'Refresh token is required'}, status=status.HTTP_400_BAD_REQUEST)
+        token = RefreshToken(refresh_token)
+        token.blacklist()
+
+        return Response({"Message":'SucceSsfully logged out'},status=status.HTTP_200_0K)
+    except Exception as e:
+        return Response({'error': 'Invalid refresh Token'}, status=status.HTTP_400_BAD_REQUEST)
+    
+    
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
