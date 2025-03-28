@@ -14,10 +14,10 @@ const Navbar = () => {
     : "/";
 
   return (
-    <nav className="bg-slate-500 px-6 py-4">
+    <nav className="bg-slate-100 px-6 py-4">
       <div className="container mx-auto flex items-center justify-between">
         <div className="text-xl font-bold">
-          <Link href={homeRoute}>My Shop</Link>
+          <Link href={homeRoute}>TruckTech</Link>
         </div>
 
         <div className="hidden md:flex gap-6 text-lg">

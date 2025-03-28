@@ -7,6 +7,7 @@ const ManageCategories = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        console.log("Submitting category:", newCategory);
         if (newCategory.trim()) {
             addCategory(newCategory);
             setNewCategory("");

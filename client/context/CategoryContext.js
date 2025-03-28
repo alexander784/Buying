@@ -60,6 +60,7 @@ export const CategoryProvider = ({ children }) => {
             alert("Authentication required! Please log in as an admin.");
             return;
         }
+        console.log("Sending category to API:", name);
 
         try {
             const response = await fetch(`${API_BASE_URL}categories/categories/create/`, {
@@ -73,6 +74,7 @@ export const CategoryProvider = ({ children }) => {
             });
 
             const resData = await response.json();
+            console.log('Response data:', resData);
 
             if (!response.ok) {
                 throw new Error(`Failed to add category: ${response.status}`);
@@ -91,7 +93,7 @@ export const CategoryProvider = ({ children }) => {
         }
 
         try {
-            const response = await fetch(`${API_BASE_URL}categories/${categoryId}/delete/`, {
+            const response = await fetch(`${API_BASE_URL}categories/categories/delete/${categoryId}/`, {
                 method: "DELETE",
                 headers: {
                     ...getAuthHeaders(),
