@@ -26,7 +26,6 @@ export default function ProductsPage() {
                 key={product.id}
                 className="bg-white shadow-md rounded-lg overflow-hidden transition-transform transform hover:scale-105 p-2"
               >
-                {/* Smaller Image Size */}
                 <div className="relative w-full h-44 md:h-52 lg:h-56">
                   <Image
                     src={imageUrl}
