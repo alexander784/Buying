@@ -9,9 +9,18 @@ const useProductsByCategory = () => {
 
     useEffect(() => {
         const fetchProductsByCategory = async () => {
+            setLoading(true);
+            setError(null);
+
             try {
-                const res = await fetch(`${API_BASE_URL}categories/categories/get_products_by_category/`);
-                if (!res.ok) throw new Error("Failed to fetch products");
+                const token = localStorage.getItem("token");
+                const res = await fetch(`${API_BASE_URL}categories/categories/get_products_by_category/`, {
+                    headers: token
+                        ? { Authorization: `Bearer ${token}`, "Content-Type": "application/json" }
+                        : {}, 
+                });
+
+                if (!res.ok) throw new Error(`Failed to fetch products: ${res.statusText}`);
 
                 const data = await res.json();
                 setCategories(data);
@@ -23,7 +32,7 @@ const useProductsByCategory = () => {
         };
 
         fetchProductsByCategory();
-    }, []);
+    }, []); 
 
     return { categories, loading, error };
 };

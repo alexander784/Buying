@@ -1,8 +1,10 @@
 import { useProducts } from "@/context/ProductsContext";
 import { useCart } from "@/context/cartContext";
 import Image from "next/image";
+import { HiOutlineShoppingCart } from "react-icons/hi";
 
 export default function ProductsPage() {
+  const {  handleRequestQuote } = useCart();
   const { products } = useProducts();
   const { handleAddToCart } = useCart();
   const baseUrl = "http://127.0.0.1:8000";
@@ -35,17 +37,28 @@ export default function ProductsPage() {
                     unoptimized
                   />
                 </div>
-                <div className="p-3">
-                  <h3 className="text-sm md:text-base font-semibold">{product.name}</h3>
-                  <p className="text-gray-600 text-xs md:text-sm truncate">{product.description}</p>
-                  <p className="text-sm md:text-base font-bold mt-1">${product.price}</p>
-                  <button
-                    onClick={() => handleAddToCart(product.id)}
-                    className="mt-3 w-full bg-orange-950 text-white py-1.5 rounded-lg hover:bg-orange-900 transition text-xs md:text-sm"
-                  >
-                    Add to Cart
-                  </button>
-                </div>
+                  <div className="p-3">
+                    <div className="flex justify-between items-center">
+                      <h3 className="text-sm md:text-base font-semibold">{product.name}</h3>
+                      <div className="flex w-8 h-8 justify-center bg-black rounded-lg">
+                      <button onClick={() => handleAddToCart(product.id)} className="text-white hover:text-orange-800">
+                        <HiOutlineShoppingCart className="w-5 h-5" />
+                      </button>
+                      </div>
+                    </div>
+
+                    <p className="text-gray-600 text-xs md:text-sm truncate">{product.description}</p>
+                    <p className="text-sm md:text-base font-bold mt-1">${product.price}</p>
+
+                    <button 
+                      onClick={handleRequestQuote}
+                      className="mt-2 w-full bg-orange-950 text-white py-2 rounded-lg transition"
+                    >
+                      Order Via Whatsapp
+                    </button>
+                 </div>
+
+               
               </div>
             );
           })
