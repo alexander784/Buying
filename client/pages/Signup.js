@@ -46,7 +46,7 @@ const Signup = () => {
           setError(data.error);
         } else {
           setLoading(false);
-          router.push('/login');  
+          router.push('/Login');  
         }
       })
       .catch((err) => {

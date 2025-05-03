@@ -5,7 +5,7 @@ const CategoryContext = createContext();
 
 const getAuthHeaders = () => {
     if (typeof window !== "undefined") {
-        const token = localStorage.getItem("access_token"); 
+        const token = localStorage.getItem("access_token");
         return token ? { Authorization: `Bearer ${token}` } : {};
     }
     return {};
@@ -14,33 +14,21 @@ const getAuthHeaders = () => {
 export const CategoryProvider = ({ children }) => {
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [token, setToken] = useState(null);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
-        if (typeof window !== "undefined") {
-            const storedToken = localStorage.getItem("access_token");
-            if (storedToken) {
-                setToken(storedToken);
-            }
-        }
+        fetchCategories();
     }, []);
-
-    useEffect(() => {
-        if (token) {
-            fetchCategories();
-        }
-    }, [token]);
 
     const fetchCategories = async () => {
         setLoading(true);
+        setError(null);
         try {
             const response = await fetch(`${API_BASE_URL}categories/categories/`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
-                    ...getAuthHeaders(),
                 },
-                credentials: "include",
             });
 
             if (!response.ok) {
@@ -51,13 +39,16 @@ export const CategoryProvider = ({ children }) => {
             setCategories(data);
         } catch (error) {
             console.error("Error fetching categories:", error);
+            setError(error.message);
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     };
 
     const addCategory = async (name) => {
+        const token = localStorage.getItem("access_token");
         if (!token) {
-            alert("Authentication required! Please log in as an admin.");
+            setError("Authentication required! Please log in as an admin.");
             return;
         }
         console.log("Sending category to API:", name);
@@ -69,26 +60,27 @@ export const CategoryProvider = ({ children }) => {
                     "Content-Type": "application/json",
                     ...getAuthHeaders(),
                 },
-                credentials: "include",
                 body: JSON.stringify({ name }),
             });
 
             const resData = await response.json();
-            console.log('Response data:', resData);
+            console.log("Response data:", resData);
 
             if (!response.ok) {
                 throw new Error(`Failed to add category: ${response.status}`);
             }
 
-            fetchCategories(); 
+            fetchCategories();
         } catch (error) {
             console.error("Error adding category:", error);
+            setError(error.message);
         }
     };
 
     const deleteCategory = async (categoryId) => {
+        const token = localStorage.getItem("access_token");
         if (!token) {
-            alert("Authentication required! Please log in as an admin.");
+            setError("Authentication required! Please log in as an admin.");
             return;
         }
 
@@ -98,21 +90,21 @@ export const CategoryProvider = ({ children }) => {
                 headers: {
                     ...getAuthHeaders(),
                 },
-                credentials: "include",
             });
 
             if (!response.ok) {
                 throw new Error(`Failed to delete category: ${response.status}`);
             }
 
-            fetchCategories(); 
+            fetchCategories();
         } catch (error) {
             console.error("Error deleting category:", error);
+            setError(error.message);
         }
     };
 
     return (
-        <CategoryContext.Provider value={{ categories, loading, addCategory, deleteCategory }}>
+        <CategoryContext.Provider value={{ categories, loading, error, addCategory, deleteCategory }}>
             {children}
         </CategoryContext.Provider>
     );
