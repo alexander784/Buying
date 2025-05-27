@@ -13,7 +13,7 @@ const CategoriesPage = () => {
 
     return (
         <div>
-            <h1 className="text-3xl font-bold">Products by Category</h1>
+            <h1 className="text-3xl font-bold">Shop by Category</h1>
             {categories.map((category) => (
                 <div key={category.id} className="mt-4">
                     <h2 className="text-2xl">{category.name}</h2>

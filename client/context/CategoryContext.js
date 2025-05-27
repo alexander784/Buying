@@ -28,6 +28,7 @@ export const CategoryProvider = ({ children }) => {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
+                    ...getAuthHeaders()
                 },
             });
 

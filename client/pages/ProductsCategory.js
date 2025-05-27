@@ -11,7 +11,7 @@ const ProductsByCategory = () => {
 
   return (
     <div className="container mx-auto p-4 md:p-6">
-      <h2 className="text-xl md:text-2xl font-bold mb-4 text-center">Products by Category</h2>
+      <h2 className="text-xl md:text-2xl font-bold mb-4 text-center">Shop by Category</h2>
 
       {loading && <p className="text-center text-gray-500">Loading...</p>}
       {error && <p className="text-center text-red-500">{error}</p>}
@@ -39,7 +39,7 @@ const ProductsByCategory = () => {
                       src={imageUrl}
                       alt={product.name || "Product"}
                       layout="fill"
-                      objectFit="cover"
+                      objectFit="contain"
                       className="rounded-t-lg"
                       unoptimized
                     />
@@ -55,7 +55,7 @@ const ProductsByCategory = () => {
                       </div>
   
                       <p className="text-gray-600 text-xs md:text-sm truncate">{product.description}</p>
-                      <p className="text-sm md:text-base font-bold mt-1">${product.price}</p>
+                      {/* <p className="text-sm md:text-base font-bold mt-1">${product.price}</p> */}
   
                       <button 
                         onClick={handleRequestQuote}
