@@ -1,0 +1,24 @@
+databases:
+  - name: myapp-db
+    databaseName: myapp
+    user: myapp_user
+    plan: free
+
+services:
+  - type: web
+    name: myapp-backend
+    runtime: python
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn ecommerce.wsgi.application" 
+    plan: free
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: myapp-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: False
+      - key: ALLOWED_HOSTS
+        value: myapp-backend.onrender.com
