@@ -10,7 +10,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-h%k5*q+5aheu0fk-%y%n(mr%%kdrfwb!m0k)4kmsg5#mr)r)!#')
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'https://buying-929a.onrender.com').split(',')
 
 INSTALLED_APPS = [
     'django.contrib.admin',
